@@ -22,6 +22,9 @@ public class User {
     @Getter @Setter
     private String email;
 
+    @Getter @Setter
+    private String password;
+
     @Column(name = "class")
     @Enumerated(EnumType.STRING)
     @Getter @Setter
