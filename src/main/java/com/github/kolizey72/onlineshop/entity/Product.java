@@ -1,5 +1,8 @@
 package com.github.kolizey72.onlineshop.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,71 +11,27 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
     private Long id;
 
-    @Column(name = "name")
+    @Getter @Setter
     private String name;
 
-    @Column(name = "price")
+    @Getter @Setter
     private Double price;
 
     @Column(name = "class")
     @Enumerated(EnumType.STRING)
+    @Getter @Setter
     private UserClass userClass;
 
     @Column(name = "profession")
     @Enumerated(EnumType.STRING)
+    @Getter @Setter
     private UserProfession userProfession;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @Getter @Setter
     private User seller;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public UserClass getUserClass() {
-        return userClass;
-    }
-
-    public void setUserClass(UserClass userClass) {
-        this.userClass = userClass;
-    }
-
-    public UserProfession getUserProfession() {
-        return userProfession;
-    }
-
-    public void setUserProfession(UserProfession userProfession) {
-        this.userProfession = userProfession;
-    }
-
-    public User getSeller() {
-        return seller;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
 }
