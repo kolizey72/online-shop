@@ -28,11 +28,11 @@ public class RegistrationValidation implements Validator {
             errors.rejectValue("matchingPassword", "", "Password didn't match");
         }
 
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (userRepository.findByUsernameIgnoreCase(user.getUsername()).isPresent()) {
             errors.rejectValue("username", "", "Username is already taken");
         }
 
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (userRepository.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             errors.rejectValue("email", "", "Email is already taken");
         }
     }
