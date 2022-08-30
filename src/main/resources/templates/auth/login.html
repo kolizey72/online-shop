@@ -9,6 +9,8 @@
 </head>
 <body class="login-page">
 
+<div th:insert="header :: header"></div>
+
 <form method="post" class="form-login">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
