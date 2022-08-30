@@ -1,0 +1,25 @@
+:root {
+    --bg-color : var(--bs-gray-800);
+}
+
+
+.login-page, .registration-page{
+    background-color: var(--bg-color);
+}
+
+/* Login page */
+.form-login {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 15px auto;
+}
+
+/* Registration page */
+
+.form-registration {
+    width: 100%;
+    max-width: 660px;
+    padding: 15px;
+    margin: 15px auto;
+}

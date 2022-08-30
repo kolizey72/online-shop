@@ -1,14 +1,23 @@
 package com.github.kolizey72.onlineshop.entity;
 
+import lombok.Getter;
+
 public enum UserClass {
-    NONE,
-    WARRIOR,
-    ROGUE,
-    PRIEST,
-    SHAMAN,
-    PALADIN,
-    WARLOCK,
-    MAGE,
-    DRUID,
-    HUNTER
+    NONE("None"),
+    WARRIOR("Warrior"),
+    ROGUE("Rogue"),
+    PRIEST("Priest"),
+    SHAMAN("Shaman"),
+    PALADIN("Paladin"),
+    WARLOCK("Warlock"),
+    MAGE("Mage"),
+    DRUID("Druid"),
+    HUNTER("Hunter");
+
+    @Getter
+    private final String displayedName;
+
+    UserClass(String displayedName) {
+        this.displayedName = displayedName;
+    }
 }

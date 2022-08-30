@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign up</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css">
+</head>
+<body class="registration-page">
+
+<form class="form-registration"
+      th:method="POST" th:action="@{/auth/registration}" th:object="${user}">
+
+    <h1 class="display-5 text-center text-white mb-4">Registration</h1>
+
+    <div class="row">
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" autocomplete="off"
+                       th:field="*{username}" id="username" placeholder="Username">
+                <label class="form-label" for="username">Username</label>
+            </div>
+        </div>
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" autocomplete="off"
+                       th:field="*{email}" id="email" placeholder="email">
+                <label class="form-label" for="email">Email</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <input type="password" class="form-control"
+                       th:field="*{password}" id="password" placeholder="Password">
+                <label class="form-label" for="password">Password</label>
+            </div>
+        </div>
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <input type="password" class="form-control"
+                       id="confirm-password" placeholder="Confirm password">
+                <label class="form-label" for="confirm-password">Confirm password</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <select th:field="*{userClass}" id="class-select" class="form-select">
+                    <option th:each="class : ${T(com.github.kolizey72.onlineshop.entity.UserClass).values()}"
+                            th:value="${class}" th:text="${class.displayedName}"
+                            th:selected="${class == class.NONE}"/>
+                </select>
+                <label class="form-label" for="class-select">Class</label>
+            </div>
+        </div>
+        <div class="col-md-6 col-12 mb-3">
+            <div class="form-floating">
+                <select th:field="*{userProfession}" id="profession-select" class="form-select">
+                    <option th:each="profession : ${T(com.github.kolizey72.onlineshop.entity.UserProfession).values()}"
+                            th:value="${profession}" th:text="${profession.displayedName}"
+                            th:selected="${profession == profession.NONE}"/>
+                </select>
+                <label class="form-label" for="profession-select">Profession</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-success btn-lg" type="submit">Sign up</button>
+    </div>
+</form>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}" src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
