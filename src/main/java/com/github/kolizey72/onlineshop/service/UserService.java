@@ -1,5 +1,6 @@
 package com.github.kolizey72.onlineshop.service;
 
+import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import com.github.kolizey72.onlineshop.entity.User;
 import com.github.kolizey72.onlineshop.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,11 +45,14 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void register(UserRegistrationForm userForm) {
+        userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
+
+        User user = new User(userForm);
         user.setRegistration(new Date());
         user.setRole("ROLE_USER");
         user.setBanned(false);
+
         userRepository.save(user);
     }
 

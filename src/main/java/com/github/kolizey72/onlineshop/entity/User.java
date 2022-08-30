@@ -1,6 +1,8 @@
 package com.github.kolizey72.onlineshop.entity;
 
+import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -57,6 +60,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "seller")
     @Getter @Setter
     private List<Product> products;
+
+    public User(UserRegistrationForm user) {
+        username = user.getUsername();
+        email = user.getEmail();
+        password = user.getPassword();
+        userClass = user.getUserClass();
+        userProfession = user.getUserProfession();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

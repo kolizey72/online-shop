@@ -1,14 +1,16 @@
 package com.github.kolizey72.onlineshop.controller;
 
-import com.github.kolizey72.onlineshop.entity.User;
-import com.github.kolizey72.onlineshop.entity.UserClass;
+import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import com.github.kolizey72.onlineshop.service.UserService;
+import com.github.kolizey72.onlineshop.validation.RegistrationValidation;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,8 +20,11 @@ public class AuthController {
 
     private final UserService userService;
 
-    public AuthController(UserService userService) {
+    private final RegistrationValidation registrationValidation;
+
+    public AuthController(UserService userService, RegistrationValidation registrationValidation) {
         this.userService = userService;
+        this.registrationValidation = registrationValidation;
     }
 
     @GetMapping("/login")
@@ -28,13 +33,17 @@ public class AuthController {
     }
 
     @GetMapping("/registration")
-    public String registrationPage(Model model, @ModelAttribute("user") User user) {
-        model.addAttribute("classes", UserClass.values());
+    public String registrationPage(@ModelAttribute("user") UserRegistrationForm user) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute("user") User user) {
+    public String registration(@ModelAttribute("user") @Valid UserRegistrationForm user, BindingResult bindingResult) {
+        registrationValidation.validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "auth/registration";
+        }
+
         userService.register(user);
         return "redirect:/auth/login";
     }

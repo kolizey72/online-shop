@@ -17,33 +17,43 @@
     <h1 class="display-5 text-center text-white mb-4">Registration</h1>
 
     <div class="row">
-        <div class="col-md-6 col-12 mb-3">
+        <div class="col-md-6 col-12 position-relative mb-3">
             <div class="form-floating">
                 <input type="text" class="form-control" autocomplete="off"
+                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                        th:field="*{username}" id="username" placeholder="Username">
                 <label class="form-label" for="username">Username</label>
-            </div>
-        </div>
-        <div class="col-md-6 col-12 mb-3">
-            <div class="form-floating">
-                <input type="text" class="form-control" autocomplete="off"
-                       th:field="*{email}" id="email" placeholder="email">
-                <label class="form-label" for="email">Email</label>
+                <div class="invalid-tooltip" th:errors="*{username}"></div>
             </div>
         </div>
 
-        <div class="col-md-6 col-12 mb-3">
+        <div class="col-md-6 col-12 position-relative mb-3">
             <div class="form-floating">
-                <input type="password" class="form-control"
-                       th:field="*{password}" id="password" placeholder="Password">
-                <label class="form-label" for="password">Password</label>
+                <input type="text" class="form-control" autocomplete="off"
+                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                       th:field="*{email}" id="email" placeholder="email">
+                <label class="form-label" for="email">Email</label>
+                <div class="invalid-tooltip" th:errors="*{email}"></div>
             </div>
         </div>
-        <div class="col-md-6 col-12 mb-3">
+
+        <div class="col-md-6 col-12 position-relative mb-3">
             <div class="form-floating">
                 <input type="password" class="form-control"
-                       id="confirm-password" placeholder="Confirm password">
+                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                       th:field="*{password}" id="password" placeholder="Password">
+                <label class="form-label" for="password">Password</label>
+                <div class="invalid-tooltip" th:errors="*{password}"></div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12 position-relative mb-3">
+            <div class="form-floating">
+                <input type="password" class="form-control"
+                       th:classappend="${#fields.hasErrors('matchingPassword')} ? 'is-invalid'"
+                       th:field="*{matchingPassword}" id="confirm-password" placeholder="Confirm password">
                 <label class="form-label" for="confirm-password">Confirm password</label>
+                <div class="invalid-tooltip" th:errors="*{matchingPassword}"></div>
             </div>
         </div>
 
@@ -57,6 +67,7 @@
                 <label class="form-label" for="class-select">Class</label>
             </div>
         </div>
+
         <div class="col-md-6 col-12 mb-3">
             <div class="form-floating">
                 <select th:field="*{userProfession}" id="profession-select" class="form-select">
