@@ -4,11 +4,13 @@ import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -24,12 +26,15 @@ public class User implements UserDetails {
     @Getter @Setter
     private Long id;
 
+    @Size(min = 3, max = 32, message = "Username length must be 3-32")
     @Getter @Setter
     private String username;
 
     @Getter @Setter
     private String password;
 
+    @NotBlank(message = "Email must not be empty")
+    @Email(message = "Email must be valid")
     @Getter @Setter
     private String email;
 
@@ -44,6 +49,8 @@ public class User implements UserDetails {
     private UserProfession userProfession;
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @PastOrPresent(message = "Birthday can not be in the future")
     @Getter @Setter
     private Date birthday;
 

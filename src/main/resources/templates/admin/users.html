@@ -7,6 +7,8 @@
     <title>Users</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css">
+    <script th:src="@{/js/jquery-3.6.1.js}" src="/static/js/jquery-3.6.1.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}" src="/static/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="page">
 
@@ -27,6 +29,7 @@
                 <th>Role</th>
                 <th>Banned</th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -36,13 +39,121 @@
                 <td th:text="*{email}">email</td>
                 <td th:text="*{userClass.displayedName}">class</td>
                 <td th:text="*{userProfession.displayedName}">profession</td>
-                <td th:text="*{birthday}">birthday</td>
-                <td th:text="*{registration}">registration</td>
-                <td th:text="*{role}">role</td>
+                <td th:text="${user.birthday} ? ${#dates.format(user.birthday, 'dd/MM/yyyy')} : '--/--/----'">birthday
+                </td>
+                <td th:text="${#dates.format(user.registration, 'dd/MM/yyyy HH:mm:ss')}">registration</td>
+                <td th:text="*{role.substring(5)}">role</td>
                 <td th:text="*{banned}">banned</td>
                 <td>
-                    <form th:method="DELETE" th:action="@{/admin/{id}(id=*{id})}">
-                        <button class="btn btn-outline-danger" type="submit" th:disabled="${user.id == 1}">Delete</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
+                            th:data-bs-target="${'#editModal-' + user.id}">
+                        Edit
+                    </button>
+
+                    <div class="modal fade text-black" th:id="${'editModal-' + user.id}" tabindex="-1"
+                         th:aria-labelledby="${'editModalLabel-' + user.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form th:method="PATCH" th:action="@{/admin/users/{id}(id=${user.id})}"
+                                      th:object="${updatedUser}">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" th:id="${'editModalLabel-' + user.id}"
+                                            th:text="'Edit ' + ${user.username}"></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row" th:with="isUserWithErrors = ${#strings.equals(param.error, #strings.toString(user.id)) and updatedUser.userClass != null}">
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="username">Username: </label>
+                                                <input type="text" class="form-control"
+                                                       th:classappend="${#fields.hasErrors('username') and isUserWithErrors} ? 'is-invalid'"
+                                                       th:value="${isUserWithErrors} ? ${updatedUser.username} : ${user.username}"
+                                                       id="username" name="username"
+                                                       th:disabled="${user.id == 1 || user.id == 2}" autocomplete="off">
+                                                <div class="invalid-feedback" th:errors="${updatedUser.username}"></div>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="email">Email: </label>
+                                                <input type="text" class="form-control"
+                                                       th:classappend="${#fields.hasErrors('email') and isUserWithErrors} ? 'is-invalid'"
+                                                       th:value="${isUserWithErrors} ? ${updatedUser.email} : ${user.email}"
+                                                       id="email" name="email"
+                                                       autocomplete="off">
+                                                <div class="invalid-feedback" th:errors="${updatedUser.email}"></div>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="class-select">Class: </label>
+                                                <select class="form-select" id="class-select" name="userClass">
+                                                    <option th:each="class : ${T(com.github.kolizey72.onlineshop.entity.UserClass).values()}"
+                                                            th:value="${class}" th:text="${class.displayedName}"
+                                                            th:with="userClass = ${isUserWithErrors} ? ${updatedUser.userClass} : ${user.userClass}"
+                                                            th:selected="${class == userClass}"/>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="profession-select">Profession: </label>
+                                                <select class="form-select" id="profession-select"
+                                                        name="userProfession">
+                                                    <option th:each="profession : ${T(com.github.kolizey72.onlineshop.entity.UserProfession).values()}"
+                                                            th:value="${profession}"
+                                                            th:text="${profession.displayedName}"
+                                                            th:with="userProfession = ${isUserWithErrors} ? ${updatedUser.userProfession} : ${user.userProfession}"
+                                                            th:selected="${profession == userProfession}"/>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="birthday">Birthday: </label>
+                                                <input type="date" class="form-control"
+                                                       th:classappend="${#fields.hasErrors('birthday') and isUserWithErrors} ? 'is-invalid'"
+                                                       th:value="${isUserWithErrors} ? ${#dates.format(updatedUser.birthday, 'yyyy-MM-dd')} : ${user.birthday}"
+                                                       id="birthday" name="birthday">
+                                                <div class="invalid-feedback" th:errors="${updatedUser.birthday}"></div>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label" for="role-select">Role: </label>
+                                                <select class="form-select" id="role-select" name="role"
+                                                        th:disabled="${user.id == 1 || user.id == 2}"
+                                                        th:with="userRole = ${isUserWithErrors} ? ${updatedUser.role} : ${user.role}">
+                                                    <option value="ROLE_USER"
+                                                            th:selected="${userRole == 'ROLE_USER'}">
+                                                        User
+                                                    </option>
+                                                    <option value="ROLE_ADMIN"
+                                                            th:selected="${userRole == 'ROLE_ADMIN'}">
+                                                        Admin
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-danger" type="submit" th:form="${'ban-form-' + user.id}"
+                                                th:disabled="${user.role == 'ROLE_ADMIN'}"
+                                                th:text="${user.banned} ? 'Unban' : 'Ban'">Ban/Unban
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                                <form th:id="${'ban-form-' + user.id}" th:method="PATCH" th:action="@{/admin/users/{id}/ban(id=${user.id})}"></form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <form th:method="DELETE" th:action="@{/admin/users/{id}(id=*{id})}">
+                        <button class="btn btn-outline-danger" type="submit"
+                                th:disabled="${user.id == 1 || user.id == 2}">Delete
+                        </button>
                     </form>
                 </td>
             </tr>
@@ -50,7 +161,13 @@
     </div>
 </section>
 
-
-<script th:src="@{/js/bootstrap.bundle.min.js}" src="/static/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    $(window).on('load', function () {
+        let searchParams = new URLSearchParams(window.location.search)
+        if (searchParams.has('error') && "[[${updatedUser.userClass}]]") {
+            $("#editModal-" + searchParams.get('error')).modal('show');
+        }
+    });
+</script>
 </body>
 </html>

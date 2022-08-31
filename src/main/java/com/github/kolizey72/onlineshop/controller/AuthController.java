@@ -3,17 +3,16 @@ package com.github.kolizey72.onlineshop.controller;
 import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import com.github.kolizey72.onlineshop.service.UserService;
 import com.github.kolizey72.onlineshop.validation.RegistrationValidation;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.github.kolizey72.onlineshop.util.SessionUtil.checkStillEnabled;
 
@@ -57,12 +56,5 @@ public class AuthController {
 
         userService.register(user);
         return "redirect:/auth/login";
-    }
-
-    @InitBinder
-    private void dateBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
-        binder.registerCustomEditor(Date.class, editor);
     }
 }
