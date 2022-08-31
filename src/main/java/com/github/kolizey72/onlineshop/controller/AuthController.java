@@ -5,14 +5,17 @@ import com.github.kolizey72.onlineshop.service.UserService;
 import com.github.kolizey72.onlineshop.validation.RegistrationValidation;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.github.kolizey72.onlineshop.util.SessionUtil.checkStillEnabled;
 
 @Controller
 @RequestMapping("/auth")
@@ -28,17 +31,25 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpServletRequest request, HttpServletResponse response) {
+        checkStillEnabled(request, response);
+
         return "auth/login";
     }
 
     @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("user") UserRegistrationForm user) {
+    public String registrationPage(HttpServletRequest request, HttpServletResponse response,
+                                   @ModelAttribute("user") UserRegistrationForm user) {
+        checkStillEnabled(request, response);
+
         return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute("user") @Valid UserRegistrationForm user, BindingResult bindingResult) {
+    public String registration(HttpServletRequest request, HttpServletResponse response,
+                               @ModelAttribute("user") @Valid UserRegistrationForm user, BindingResult bindingResult) {
+        checkStillEnabled(request, response);
+
         registrationValidation.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             return "auth/registration";

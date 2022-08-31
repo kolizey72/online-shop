@@ -69,6 +69,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void delete(long id) {
+        if (id == 1) {
+            throw new IllegalArgumentException("Can not delete default admin");
+        }
         userRepository.deleteById(id);
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Users</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css">
+</head>
+<body class="page">
+
+<div th:insert="header :: header"></div>
+
+<section class="container-lg mt-2">
+    <div class="table-responsive">
+        <table class="table table-dark table-striped ">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>username</th>
+                <th>Email</th>
+                <th>Class</th>
+                <th>Profession</th>
+                <th>Birthday</th>
+                <th>Registration</th>
+                <th>Role</th>
+                <th>Banned</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr th:each="user :${users}" th:object="${user}">
+                <td th:text="*{id}">id</td>
+                <td th:text="*{username}">username</td>
+                <td th:text="*{email}">email</td>
+                <td th:text="*{userClass.displayedName}">class</td>
+                <td th:text="*{userProfession.displayedName}">profession</td>
+                <td th:text="*{birthday}">birthday</td>
+                <td th:text="*{registration}">registration</td>
+                <td th:text="*{role}">role</td>
+                <td th:text="*{banned}">banned</td>
+                <td>
+                    <form th:method="DELETE" th:action="@{/admin/{id}(id=*{id})}">
+                        <button class="btn btn-outline-danger" type="submit" th:disabled="${user.id == 1}">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+
+<script th:src="@{/js/bootstrap.bundle.min.js}" src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

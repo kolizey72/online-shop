@@ -21,6 +21,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto gap-2">
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                    <a class="nav-link text-danger" th:href="@{/admin/users}">Users</a>
+                </li>
                 <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                        th:text="${#authentication.getName()}">username</a>
