@@ -19,6 +19,8 @@ import static com.github.kolizey72.onlineshop.util.SessionUtil.checkStillEnabled
 @RequestMapping("/admin")
 public class AdminController {
 
+    private static final int USERS_PER_PAGE = 10;
+
     private final UserService userService;
     private final UserValidation userValidation;
 
@@ -34,10 +36,21 @@ public class AdminController {
 
     @GetMapping("/users")
     public String users(HttpServletRequest request, HttpServletResponse response,
-                        Model model) {
+                        Model model, @RequestParam(defaultValue = "1") int page) {
         checkStillEnabled(request, response);
 
-        model.addAttribute("users", userService.findAllOrdered());
+        int totalUsers = (int) userService.count();
+        int totalPages = totalUsers % USERS_PER_PAGE == 0 ? totalUsers / USERS_PER_PAGE : totalUsers / USERS_PER_PAGE + 1;
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPages) {
+            page = totalPages;
+        }
+        model.addAttribute("users", userService.findAllOrdered(page - 1, USERS_PER_PAGE));
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("page", page);
 
         return "admin/users";
     }
@@ -45,7 +58,7 @@ public class AdminController {
     @PatchMapping("/users/{id}")
     public String updateUser(HttpServletRequest request, HttpServletResponse response,
                              RedirectAttributes redirectAttributes,
-                             @PathVariable long id,
+                             @PathVariable long id, @RequestParam("_page") int page,
                              @ModelAttribute("updatedUser") @Valid User user, BindingResult bindingResult) {
         checkStillEnabled(request, response);
 
@@ -53,12 +66,12 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updatedUser", bindingResult);
             redirectAttributes.addFlashAttribute("updatedUser", user);
-            return "redirect:/admin/users?error=" + id;
+            return String.format("redirect:/admin/users?page=%d&error=%d", page, id);
         }
 
         userService.update(id, user);
 
-        return "redirect:/admin/users";
+        return "redirect:/admin/users?page=" + page;
     }
 
     @PatchMapping("/users/{id}/ban")

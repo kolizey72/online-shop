@@ -50,12 +50,13 @@
                         Edit
                     </button>
 
-                    <div class="modal fade text-black" th:id="${'editModal-' + user.id}" tabindex="-1"
+                    <div class="modal text-black" th:id="${'editModal-' + user.id}" tabindex="-1"
                          th:aria-labelledby="${'editModalLabel-' + user.id}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <form th:method="PATCH" th:action="@{/admin/users/{id}(id=${user.id})}"
                                       th:object="${updatedUser}">
+                                    <input type="hidden" name="_page" th:value="${page}">
                                     <div class="modal-header">
                                         <h5 class="modal-title" th:id="${'editModalLabel-' + user.id}"
                                             th:text="'Edit ' + ${user.username}"></h5>
@@ -65,7 +66,7 @@
 
                                     <div class="modal-body">
                                         <div class="row" th:with="isUserWithErrors = ${#strings.equals(param.error, #strings.toString(user.id)) and updatedUser.userClass != null}">
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="username">Username: </label>
                                                 <input type="text" class="form-control"
                                                        th:classappend="${#fields.hasErrors('username') and isUserWithErrors} ? 'is-invalid'"
@@ -75,7 +76,7 @@
                                                 <div class="invalid-feedback" th:errors="${updatedUser.username}"></div>
                                             </div>
 
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="email">Email: </label>
                                                 <input type="text" class="form-control"
                                                        th:classappend="${#fields.hasErrors('email') and isUserWithErrors} ? 'is-invalid'"
@@ -85,7 +86,7 @@
                                                 <div class="invalid-feedback" th:errors="${updatedUser.email}"></div>
                                             </div>
 
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="class-select">Class: </label>
                                                 <select class="form-select" id="class-select" name="userClass">
                                                     <option th:each="class : ${T(com.github.kolizey72.onlineshop.entity.UserClass).values()}"
@@ -95,7 +96,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="profession-select">Profession: </label>
                                                 <select class="form-select" id="profession-select"
                                                         name="userProfession">
@@ -107,7 +108,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="birthday">Birthday: </label>
                                                 <input type="date" class="form-control"
                                                        th:classappend="${#fields.hasErrors('birthday') and isUserWithErrors} ? 'is-invalid'"
@@ -116,7 +117,7 @@
                                                 <div class="invalid-feedback" th:errors="${updatedUser.birthday}"></div>
                                             </div>
 
-                                            <div class="col-6 mb-3">
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <label class="form-label" for="role-select">Role: </label>
                                                 <select class="form-select" id="role-select" name="role"
                                                         th:disabled="${user.id == 1 || user.id == 2}"
@@ -159,6 +160,48 @@
             </tr>
         </table>
     </div>
+
+    <nav aria-label="Users pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${page - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${page == 1} ? 'active'">
+                <a class="page-link" href="/admin/users?page=1" >1</a>
+            </li>
+            <li class="page-item" th:classappend="${page > 5} ? 'disabled'" th:if="${page > 4}">
+                <a class="page-link" href="/admin/users?page=2" th:text="${page == 5} ? '2' : '...'">...</a>
+            </li>
+            <li class="page-item" th:if="${page > 3}">
+                <a class="page-link" th:href="@{/admin/users(page=${page - 2})}" th:text="${page - 2}">4</a>
+            </li>
+            <li class="page-item" th:if="${page > 2}">
+                <a class="page-link" th:href="@{/admin/users(page=${page - 1})}" th:text="${page - 1}">5</a>
+            </li>
+            <li class="page-item active" th:if="${page > 1 and page < totalPages}">
+                <a class="page-link" th:href="@{/admin/users(page=${page})}" th:text="${page}">6</a>
+            </li>
+            <li class="page-item" th:if="${page < totalPages - 1}">
+                <a class="page-link" th:href="@{/admin/users(page=${page + 1})}" th:text="${page + 1}">7</a>
+            </li>
+            <li class="page-item" th:if="${page < totalPages - 2}">
+                <a class="page-link" th:href="@{/admin/users(page=${page + 2})}" th:text="${page + 2}">8</a>
+            </li>
+            <li class="page-item" th:classappend="${page < totalPages - 4} ? 'disabled'" th:if="${page < totalPages - 3}">
+                <a class="page-link" th:href="@{/admin/users(page=${totalPages - 1})}" th:text="${page == totalPages - 4} ? ${totalPages - 1} : '...'">...</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'active'">
+                <a class="page-link" th:href="@{/admin/users(page=${totalPages})}" th:text="${totalPages}">11</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${page + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </section>
 
 <script type="text/javascript">

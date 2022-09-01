@@ -3,6 +3,8 @@ package com.github.kolizey72.onlineshop.service;
 import com.github.kolizey72.onlineshop.dto.UserRegistrationForm;
 import com.github.kolizey72.onlineshop.entity.User;
 import com.github.kolizey72.onlineshop.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,12 +41,16 @@ public class UserService implements UserDetailsService {
         return user.get();
     }
 
-    public List<User> findAllOrdered() {
-        return userRepository.findAllByOrderById();
+    public List<User> findAllOrdered(int page, int userPerPage) {
+        return userRepository.findAll(PageRequest.of(page, userPerPage, Sort.by("id"))).getContent();
     }
 
     public User findById(long id) {
         return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public long count() {
+        return userRepository.count();
     }
 
     @Transactional

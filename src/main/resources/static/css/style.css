@@ -1,9 +1,9 @@
 :root {
-    --bg-color : var(--bs-gray-800);
+    --bg-color: var(--bs-gray-800);
 }
 
 
-.page{
+.page {
     background-color: var(--bg-color);
 }
 
@@ -22,4 +22,48 @@
     max-width: 660px;
     padding: 15px;
     margin: 15px auto;
+}
+
+/* Pagination */
+
+.pagination > li > a
+{
+    color: var(--bs-white);
+    background-color: var(--bs-gray-600);
+    border-color: var(--bs-black);
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+
+{
+    color: var(--bs-white);
+    background-color: var(--bs-gray-700);
+    border-color: var(--bs-black);
+}
+
+.pagination > .active > a
+{
+    color: var(--bs-white);
+    background-color: var(--bs-gray-700) !Important;
+    border: solid 1px var(--bs-gray-700) !Important;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: var(--bs-gray-800) !Important;
+    border: solid 1px var(--bs-gray-800);
+}
+
+.pagination > .disabled > a,
+.pagination > .disabled > a:focus,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a,
+.pagination > .disabled > a:focus,
+.pagination > .disabled > a:hover {
+    color: var(--bs-gray-500);
+    background-color: var(--bs-gray-600);
+    border: solid 1px var(--bs-black);
 }
